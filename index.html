@@ -469,7 +469,7 @@
         <div class="top-bar">
             <div class="logo">
                 <span>🦺</span>
-                <span id="app-title">智能安全监控与考勤系统</span>
+                <span id="app-title" data-i18n="title">智能安全监控与考勤系统</span>
             </div>
             <div class="lang-switcher">
                 <button class="lang-btn active" data-lang="zh" onclick="switchLang('zh')">中文</button>
@@ -508,14 +508,13 @@
 
         <!-- Tab 切换 -->
         <div class="tab-container">
-            <button class="tab-btn active" onclick="switchTab('detect')" data-i18n="image_detect">图片检测</button>
-            <button class="tab-btn" onclick="switchTab('camera')" data-i18n="video_detect">实时摄像头</button>
+            <button class="tab-btn active" onclick="switchTab('detect')" data-i18n="image_detect">图片检测和实时摄像头检测</button>
             <button class="tab-btn" onclick="switchTab('zone')" data-i18n="danger_zone">危险区域</button>
             <button class="tab-btn" onclick="switchTab('face')" data-i18n="face_manage">人脸库</button>
             <button class="tab-btn" onclick="switchTab('attendance')" data-i18n="attendance">考勤</button>
         </div>
 
-        <!-- 检测面板 -->
+        <!-- 检测面板 (合并图片检测和实时摄像头) -->
         <div id="tab-detect" class="tab-content active">
             <div class="main-grid">
                 <div class="panel">
@@ -661,8 +660,8 @@
                                     <th data-i18n="id">工号</th>
                                     <th data-i18n="name">姓名</th>
                                     <th data-i18n="department">部门</th>
-                                    <th data-i18n="time">上班时间</th>
-                                    <th data-i18n="time">下班时间</th>
+                                    <th data-i18n="time_in">上班时间</th>
+                                    <th data-i18n="time_out">下班时间</th>
                                     <th data-i18n="status">状态</th>
                                 </tr>
                             </thead>
@@ -682,6 +681,190 @@
     </div>
 
     <script>
+        // ============ 内置多语言包 ============
+        const i18nData = {
+            zh: {
+                title: '智能安全监控与考勤系统',
+                total_detections: '总检测次数',
+                compliant: '合规 (佩戴安全帽)',
+                violations: '违规 (未佩戴安全帽)',
+                danger_intrusion: '危险区域入侵',
+                critical_alert: '严重告警',
+                compliance_rate: '合规率',
+                image_detect: '图片检测和实时摄像头检测',
+                video_detect: '实时摄像头检测',
+                danger_zone: '危险区域',
+                face_manage: '人脸库',
+                attendance: '考勤',
+                upload_text: '拖拽图片到此处，或点击上传',
+                upload_hint: '支持 JPG, PNG, BMP 格式',
+                select_image: '选择图片',
+                detection_results: '检测结果',
+                hardhat: '佩戴安全帽',
+                no_hardhat: '未佩戴安全帽',
+                status_warning: '危险区域',
+                start_camera: '开启摄像头',
+                stop_camera: '停止摄像头',
+                reset_stats: '重置统计',
+                click_to_draw: '点击绘制多边形顶点，右键完成',
+                zone_name: '区域名称',
+                save_zone: '保存区域',
+                clear_zone: '清除',
+                no_records: '暂无记录',
+                alert_log: '告警日志',
+                zone_active: '区域已激活',
+                person_in_zone: '人员进入危险区域',
+                face_register: '人脸注册',
+                face_detected: '点击上传人脸照片',
+                face_name: '姓名',
+                face_id: '工号',
+                face_department: '部门',
+                register: '注册',
+                face_list: '已注册人员',
+                clock_in: '上班打卡',
+                clock_out: '下班打卡',
+                clock_success: '打卡成功',
+                attendance_today: '今日考勤',
+                date_range: '查询',
+                export_csv: '导出',
+                id: '工号',
+                name: '姓名',
+                department: '部门',
+                time_in: '上班时间',
+                time_out: '下班时间',
+                status: '状态',
+                footer: '智能安全监控与考勤系统 v3.0 | 基于 YOLOv8 + OpenCV',
+                warning: '本系统仅供安全监控参考，实际安全决策请结合人工判断',
+                total_people: '总人数',
+                wearing_hardhat: '佩戴安全帽',
+                not_wearing: '未佩戴',
+                normal: '正常',
+                late: '迟到',
+                early: '早退',
+                early_leave: '早退'
+            },
+            en: {
+                title: 'Smart Safety Monitoring & Attendance System',
+                total_detections: 'Total Detections',
+                compliant: 'Compliant (Hardhat On)',
+                violations: 'Violations (No Hardhat)',
+                danger_intrusion: 'Danger Zone Intrusion',
+                critical_alert: 'Critical Alerts',
+                compliance_rate: 'Compliance Rate',
+                image_detect: 'Image & Live Camera Detection',
+                video_detect: 'Live Camera Detection',
+                danger_zone: 'Danger Zone',
+                face_manage: 'Face Database',
+                attendance: 'Attendance',
+                upload_text: 'Drag image here or click to upload',
+                upload_hint: 'Supports JPG, PNG, BMP formats',
+                select_image: 'Select Image',
+                detection_results: 'Detection Results',
+                hardhat: 'Hardhat On',
+                no_hardhat: 'No Hardhat',
+                status_warning: 'Danger Zone',
+                start_camera: 'Start Camera',
+                stop_camera: 'Stop Camera',
+                reset_stats: 'Reset Stats',
+                click_to_draw: 'Click to draw polygon vertices, right-click to finish',
+                zone_name: 'Zone Name',
+                save_zone: 'Save Zone',
+                clear_zone: 'Clear',
+                no_records: 'No records',
+                alert_log: 'Alert Log',
+                zone_active: 'Zone activated',
+                person_in_zone: 'Person entered danger zone',
+                face_register: 'Face Registration',
+                face_detected: 'Click to upload face photo',
+                face_name: 'Name',
+                face_id: 'Employee ID',
+                face_department: 'Department',
+                register: 'Register',
+                face_list: 'Registered Personnel',
+                clock_in: 'Clock In',
+                clock_out: 'Clock Out',
+                clock_success: 'Clock success',
+                attendance_today: "Today's Attendance",
+                date_range: 'Query',
+                export_csv: 'Export',
+                id: 'ID',
+                name: 'Name',
+                department: 'Department',
+                time_in: 'Clock In',
+                time_out: 'Clock Out',
+                status: 'Status',
+                footer: 'Smart Safety Monitoring & Attendance System v3.0 | Powered by YOLOv8 + OpenCV',
+                warning: 'This system is for safety monitoring reference only. Please combine with manual judgment for actual safety decisions.',
+                total_people: 'Total People',
+                wearing_hardhat: 'Wearing Hardhat',
+                not_wearing: 'Not Wearing',
+                normal: 'Normal',
+                late: 'Late',
+                early: 'Early Leave',
+                early_leave: 'Early Leave'
+            },
+            ko: {
+                title: '스마트 안전 모니터링 및 근태 관리 시스템',
+                total_detections: '총 감지 횟수',
+                compliant: '준수 (안전모 착용)',
+                violations: '위반 (안전모 미착용)',
+                danger_intrusion: '위험 구역 침입',
+                critical_alert: '심각한 경고',
+                compliance_rate: '준수율',
+                image_detect: '이미지 및 실시간 카메라 감지',
+                video_detect: '실시간 카메라 감지',
+                danger_zone: '위험 구역',
+                face_manage: '얼굴 데이터베이스',
+                attendance: '근태 관리',
+                upload_text: '이미지를 여기로 드래그하거나 클릭하여 업로드',
+                upload_hint: 'JPG, PNG, BMP 형식 지원',
+                select_image: '이미지 선택',
+                detection_results: '감지 결과',
+                hardhat: '안전모 착용',
+                no_hardhat: '안전모 미착용',
+                status_warning: '위험 구역',
+                start_camera: '카메라 시작',
+                stop_camera: '카메라 중지',
+                reset_stats: '통계 초기화',
+                click_to_draw: '클릭하여 다각형 꼭짓점을 그리고, 오른쪽 클릭으로 완료',
+                zone_name: '구역 이름',
+                save_zone: '구역 저장',
+                clear_zone: '지우기',
+                no_records: '기록 없음',
+                alert_log: '경고 로그',
+                zone_active: '구역 활성화됨',
+                person_in_zone: '위험 구역에 인원 진입',
+                face_register: '얼굴 등록',
+                face_detected: '얼굴 사진을 업로드하려면 클릭',
+                face_name: '이름',
+                face_id: '사원 번호',
+                face_department: '부서',
+                register: '등록',
+                face_list: '등록된 인원',
+                clock_in: '출근 체크',
+                clock_out: '퇴근 체크',
+                clock_success: '체크 성공',
+                attendance_today: '오늘의 근태',
+                date_range: '조회',
+                export_csv: '내보내기',
+                id: '사원 번호',
+                name: '이름',
+                department: '부서',
+                time_in: '출근 시간',
+                time_out: '퇴근 시간',
+                status: '상태',
+                footer: '스마트 안전 모니터링 및 근태 관리 시스템 v3.0 | YOLOv8 + OpenCV 기반',
+                warning: '본 시스템은 안전 모니터링 참고용입니다. 실제 안전 결정은 인적 판단과 함께 하세요.',
+                total_people: '총 인원',
+                wearing_hardhat: '안전모 착용',
+                not_wearing: '미착용',
+                normal: '정상',
+                late: '지각',
+                early: '조퇴',
+                early_leave: '조퇴'
+            }
+        };
+
         // ============ 全局状态 ============
         let currentLang = 'zh';
         let langData = {};
@@ -694,8 +877,8 @@
         let currentTab = 'detect';
 
         // ============ 初始化 ============
-        document.addEventListener('DOMContentLoaded', async () => {
-            await loadLang('zh');
+        document.addEventListener('DOMContentLoaded', () => {
+            loadLang('zh');
             initZoneCanvas();
             loadZones();
             loadFaces();
@@ -716,26 +899,24 @@
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
             document.getElementById('tab-' + tab).classList.add('active');
-            event.target.classList.add('active');
+            const clickedBtn = Array.from(document.querySelectorAll('.tab-btn')).find(
+                btn => btn.getAttribute('onclick').includes("'" + tab + "'")
+            );
+            if (clickedBtn) clickedBtn.classList.add('active');
         }
 
         // ============ 多语言切换 ============
-        async function switchLang(lang) {
+        function switchLang(lang) {
             currentLang = lang;
             document.querySelectorAll('.lang-btn').forEach(btn => {
                 btn.classList.toggle('active', btn.dataset.lang === lang);
             });
-            await loadLang(lang);
-            applyLang();
+            loadLang(lang);
         }
 
-        async function loadLang(lang) {
-            try {
-                const res = await fetch(`/api/lang/${lang}`);
-                langData = await res.json();
-            } catch (e) {
-                console.error('加载语言失败:', e);
-            }
+        function loadLang(lang) {
+            langData = i18nData[lang] || i18nData['zh'];
+            applyLang();
         }
 
         function applyLang() {
@@ -747,7 +928,8 @@
                 const key = el.dataset.i18nPlaceholder;
                 if (langData[key]) el.placeholder = langData[key];
             });
-            document.getElementById('app-title').textContent = langData['title'] || 'Safety System';
+            document.title = langData['title'] || 'Smart Safety System';
+            document.documentElement.lang = currentLang === 'zh' ? 'zh-CN' : (currentLang === 'ko' ? 'ko-KR' : 'en');
         }
 
         function t(key) {
@@ -826,7 +1008,7 @@
 
         async function saveZone() {
             if (zonePoints.length < 3) {
-                showAlert('error', '至少需要3个点');
+                showAlert('error', t('zone_name') || 'At least 3 points required');
                 return;
             }
             const name = document.getElementById('zoneNameInput').value.trim() || `Zone ${Object.keys(zones).length + 1}`;
@@ -846,7 +1028,7 @@
                     showAlert('success', t('zone_active'));
                 }
             } catch (e) {
-                showAlert('error', '保存失败');
+                showAlert('error', 'Save failed');
             }
         }
 
@@ -908,7 +1090,6 @@
                 }
             } catch (e) {}
         }
-
 
         // ============ 图片检测 ============
         const uploadArea = document.getElementById('uploadArea');
@@ -1116,7 +1297,6 @@
                 if (res.ok) loadFaces();
             } catch (e) {}
         }
-
 
         // ============ 考勤打卡 ============
         const clockArea = document.getElementById('clockArea');
